@@ -1,0 +1,22 @@
+.fractal {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.calculatingCaption {
+  position: absolute;
+  color: red;
+  font-weight: bolder;
+  font-size: 80px;
+  top: 0;
+  left: 0;
+}
+
+.img {
+  flex: 1;
+  object-fit: cover;
+  overflow: hidden;
+}

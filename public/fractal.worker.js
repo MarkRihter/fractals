@@ -5,34 +5,37 @@ class ComplexNumber {
   imaginary
 
   constructor(real = 0, imaginary = 0) {
-    this.real = real;
-    this.imaginary = imaginary;
+    this.real = real
+    this.imaginary = imaginary
   }
 
   static add(a, b) {
-      return new ComplexNumber(a.real + b.real, a.imaginary + b.imaginary)
+    return new ComplexNumber(a.real + b.real, a.imaginary + b.imaginary)
   }
 
   static module(a) {
-      return Math.sqrt(Math.pow(a.real, 2) + Math.pow(a.imaginary, 2))
+    return Math.sqrt(Math.pow(a.real, 2) + Math.pow(a.imaginary, 2))
   }
 
   static multiply(a, b) {
-      return new ComplexNumber(a.real * b.real - a.imaginary * b.imaginary, a.real * b.imaginary + b.real * a.imaginary)
+    return new ComplexNumber(
+      a.real * b.real - a.imaginary * b.imaginary,
+      a.real * b.imaginary + b.real * a.imaginary
+    )
   }
 
   static pow(base, exponent) {
-      let resultNumber = { ...base }
+    let resultNumber = { ...base }
 
-      for (let i = 1; i < exponent; i++) {
-          resultNumber = ComplexNumber.multiply(resultNumber, base)
-      }
+    for (let i = 1; i < exponent; i++) {
+      resultNumber = ComplexNumber.multiply(resultNumber, base)
+    }
 
-      return resultNumber
+    return resultNumber
   }
 }
 
-self.onmessage = async (e) => {
+self.onmessage = async e => {
   if (e && e.data) {
     const c = new ComplexNumber(-1.395, 0.005)
     const { myImageData, mx, my } = e.data
@@ -69,6 +72,6 @@ self.onmessage = async (e) => {
       }
     }
 
-    self.postMessage(myImageData);
+    self.postMessage(myImageData)
   }
-};
+}
