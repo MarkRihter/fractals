@@ -1,8 +1,10 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useStore } from 'effector-react'
+import { setImageSize, setFractalCalculating, $fractalConfig } from 'models'
+import './index.css'
 
 const Fractal: React.FC = () => {
-  const [isCalculating, setCalculating] = useState(false)
-  const [imgSize, setImgSize] = useState(150)
+  const { imgSize, isCalculating } = useStore($fractalConfig)
   const imgRef = useRef<HTMLImageElement>(null)
   const fractalWorkerRef = useRef(new Worker('./fractal.worker.js'))
   const canvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'))
@@ -19,31 +21,23 @@ const Fractal: React.FC = () => {
       canvas2DContext.putImageData(e.data, 0, 0)
       console.log(canvasRef.current.toDataURL())
       if (imgRef.current) imgRef.current.src = canvasRef.current.toDataURL()
-      setCalculating(false)
+      setFractalCalculating(false)
     }
 
     return () => fractalWorkerRef.current.terminate()
   }, [])
 
   const drawFractal = () => {
-    setCalculating(true)
+    setFractalCalculating(true)
     const myImageData = new ImageData(imgSize, imgSize)
-    fractalWorkerRef.current.postMessage({
-      myImageData,
-      mx: imgSize,
-      my: imgSize,
-    })
-  }
-
-  const onSizeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setImgSize(parseInt(e.target.value, 10))
+    fractalWorkerRef.current.postMessage({ myImageData, mx: imgSize, my: imgSize })
   }
 
   return (
     <div className='fractal'>
-      <img ref={imgRef} className='img' />
+      <img alt=' ' ref={imgRef} className='img' />
       <button onClick={drawFractal}>Draw</button>
-      <input value={imgSize} onChange={onSizeChange} />
+      <input value={imgSize} onChange={setImageSize} type='number' max={5000} />
       {isCalculating && <p className='calculatingCaption'>Is calculating</p>}
     </div>
   )

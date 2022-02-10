@@ -1,0 +1,18 @@
+$transitionDuration: 250ms;
+$transitionProperties: $transitionDuration ease-out;
+
+@mixin baseTransition($properties...) {
+  @if length($properties) == 0 {
+    transition: all $transitionProperties;
+  } @else {
+    $trasitions: ();
+    @each $property in $properties {
+      $trasitions: append($trasitions, #{$property $transitionProperties ','});
+    }
+    transition: $trasitions;
+  }
+}
+
+:export {
+  duration: $transitionDuration
+}

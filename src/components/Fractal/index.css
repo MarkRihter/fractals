@@ -6,6 +6,10 @@
   align-items: stretch;
 }
 
+.draw-button {
+  height: 20px;
+}
+
 .calculatingCaption {
   position: absolute;
   color: red;
