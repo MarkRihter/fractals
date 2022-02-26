@@ -5,14 +5,14 @@ $transitionProperties: $transitionDuration ease-out;
   @if length($properties) == 0 {
     transition: all $transitionProperties;
   } @else {
-    $trasitions: ();
+    $transitions: ();
     @each $property in $properties {
-      $trasitions: append($trasitions, #{$property $transitionProperties ','});
+      $transitions: append($transitions, #{$property $transitionProperties ','});
     }
-    transition: $trasitions;
+    transition: $transitions;
   }
 }
 
 :export {
-  duration: $transitionDuration
+  duration: $transitionDuration;
 }

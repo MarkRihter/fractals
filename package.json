@@ -1,5 +1,5 @@
 {
-  "name": "math-app",
+  "name": "fractal-web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,6 +18,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "sass": "^1.49.9",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
@@ -52,5 +53,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.28.0",
     "prettier": "^2.5.1"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }

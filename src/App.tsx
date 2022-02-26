@@ -1,10 +1,11 @@
 import React from 'react'
-import { Fractal } from 'components'
+import { BottomPanel, Fractal } from 'components'
 
 function App() {
   return (
     <div className='App'>
       <Fractal />
+      <BottomPanel />
     </div>
   )
 }
