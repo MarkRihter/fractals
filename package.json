@@ -23,6 +23,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "start:dev": "docker run -it --rm -v ${PWD}:/usr/app -v /usr/app/node_modules -p 3001:3000 -e CHOKIDAR_USEPOLLING=true markrikhter/fractal:dev",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
