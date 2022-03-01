@@ -1,11 +1,10 @@
-FROM node:16.14.0-alpine as development
-ENV NODE_ENV=development
+FROM node:16.14.0-alpine
+
 WORKDIR /usr/app
 COPY package.json ./
 COPY yarn.lock ./
 RUN yarn install
-
-COPY ./ ./
+COPY . .
 
 EXPOSE 3000
 
