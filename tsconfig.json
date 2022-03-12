@@ -17,5 +17,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "public/fractal.worker.js"]
+  "include": ["src"]
 }

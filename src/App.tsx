@@ -1,11 +1,11 @@
 import React from 'react'
-import { BottomPanel, Fractal } from 'components'
+import { SideBar, Fractal } from 'components'
 
 function App() {
   return (
-    <div className='App'>
+    <div>
       <Fractal />
-      <BottomPanel />
+      <SideBar />
     </div>
   )
 }

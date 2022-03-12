@@ -1,0 +1,18 @@
+.drawerButtonWrapper {
+  display: grid;
+  gap: 10px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 3px;
+}
+
+.drawerContent {
+  padding: 3px 30px 0 0;
+}
+
+.rangesWrapper {
+  max-width: 50%;
+}
