@@ -82,7 +82,7 @@ $fractalConfig
 
 export const $isImageExists = $fractalConfig.map(({ img }) => !!img)
 
-const worker = new Worker('fractal.worker.js')
+const worker = new Worker('worker/fractal.js')
 const canvas = document.createElement('canvas')
 const fractalConfig = $fractalConfig.getState()
 canvas.width = fractalConfig.xSize
