@@ -3,10 +3,8 @@ FROM node:16.14.0-alpine
 WORKDIR /usr/app
 COPY package.json .
 COPY yarn.lock .
-RUN yarn
+RUN yarn install
 COPY . .
+
 RUN yarn run build:worker
-
-EXPOSE 3000
-
-CMD ["yarn", "start"]
+RUN yarn build

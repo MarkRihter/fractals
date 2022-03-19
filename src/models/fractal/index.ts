@@ -1,6 +1,7 @@
 import { createEvent, createStore } from 'effector'
 import { FractalOption, DefaultFractal } from 'interfaces'
-import { Optional, WorkerMessage } from 'interfaces'
+import { Optional, WorkerReturnMessage } from 'interfaces'
+import { WorkerReturnMessageType } from 'enums'
 import { downloadFromCanvas } from 'utils'
 
 interface Store {
@@ -82,21 +83,21 @@ $fractalConfig
 
 export const $isImageExists = $fractalConfig.map(({ img }) => !!img)
 
-const worker = new Worker('worker/fractal.js')
+const worker = new Worker('fractal.js')
 const canvas = document.createElement('canvas')
 const fractalConfig = $fractalConfig.getState()
 canvas.width = fractalConfig.xSize
 canvas.height = fractalConfig.ySize
-worker.onmessage = function (e: MessageEvent<WorkerMessage>) {
+worker.onmessage = function (e: MessageEvent<WorkerReturnMessage>) {
   const canvas2DContext = canvas.getContext('2d')
   switch (e.data.type) {
-    case 'renderCompleted':
+    case WorkerReturnMessageType.RenderCompleted:
       if (!canvas2DContext) return
       canvas2DContext.putImageData(e.data.payload, 0, 0)
       setImage(canvas.toDataURL())
       setFractalCalculating(false)
       break
-    case 'renderInProgress':
+    case WorkerReturnMessageType.RenderInProgress:
       setProgress(e.data.payload)
       break
   }

@@ -29,12 +29,11 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start:compose": "docker-compose -f docker-compose.dev.yml up -d --build",
-    "stop:compose": "docker-compose -f docker-compose.dev.yml down",
-    "start": "react-scripts start",
-    "build:worker": "esbuild src/webWorker/index.js --outfile=public/worker/fractal.js --target=esnext",
+    "start": "react-scripts start & yarn run start:worker",
+    "start:worker": "esbuild ./src/webWorker/index.js --outfile=public/fractal.js --target=esnext --allow-overwrite --bundle --watch",
+    "prebuild": "yarn run build:worker",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build:worker": "esbuild ./src/webWorker/index.js --outfile=public/fractal.js --target=esnext --allow-overwrite --bundle --minify",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
