@@ -1,8 +1,7 @@
-/* eslint-disable no-restricted-globals */
 import { ComplexNumber } from 'classes'
-import { Fractal, WorkerReturnMessageType } from 'enums'
+import { WorkerReturnMessageType } from 'enums'
 import { WorkerPostMessage } from 'interfaces'
-import { mandelbrotGenerator, juliaGenerator } from './generators'
+import valueGenerator from './generator'
 
 function postProgress(progress: number) {
   self.postMessage({ type: WorkerReturnMessageType.RenderInProgress, payload: progress })
@@ -10,8 +9,7 @@ function postProgress(progress: number) {
 
 self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
   if (e && e.data) {
-    const { myImageData, mx, my, xCenter, yCenter, fractal, cReal, cImaginary } = e.data
-    const zoomVariable = 0.25
+    const { myImageData, mx, my } = e.data
 
     for (let y = -my / 2; y < my / 2; y++) {
       const canvasY = y + my / 2
@@ -25,27 +23,12 @@ self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
 
         myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 3] = 255
 
-        const divisor = (mx > my ? mx : my) * zoomVariable
-
-        let value
-        switch (fractal) {
-          case Fractal.Mandelbrot:
-            value = mandelbrotGenerator(
-              new ComplexNumber(x / divisor + xCenter, y / divisor - yCenter)
-            )
-            break
-          case Fractal.Julia:
-            value = juliaGenerator(
-              new ComplexNumber(cReal, cImaginary),
-              new ComplexNumber(x / divisor + xCenter, y / divisor - yCenter)
-            )
-            break
-        }
+        const valueIterator = valueGenerator(e.data, x, y)
 
         for (let i = 0; i < 100; i++) {
-          const z = value.next().value
+          const { value } = valueIterator.next()
 
-          if (ComplexNumber.module(z) >= 2) {
+          if (ComplexNumber.module(value) >= 2) {
             myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4] = 255
             myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 1] = 255
             myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 2] = 255

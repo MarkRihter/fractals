@@ -1,9 +1,9 @@
 import { ComplexNumber } from 'classes'
 
-export default function* mandelbrotValuesGenerator(
-  c: ComplexNumber
+export default function* juliaGenerator(
+  c: ComplexNumber,
+  z: ComplexNumber
 ): IterableIterator<ComplexNumber> {
-  let z = new ComplexNumber()
   while (true) {
     z = ComplexNumber.add(ComplexNumber.pow(z, 2), c)
     yield z
