@@ -5,11 +5,5 @@
 */
 
 job("yandex dev environment") {    
-        docker {
-        	build {
-            	context = "docker"
-            	args["YANDEX_CLOUD_KEY_ID"] = "YANDEX_CLOUD_KEY_ID_EXAMPLE"
-            	args["YANDEX_CLOUD_SECRET"] = "YANDEX_CLOUD_SECRET_EXAMPLE"
-        	}
-    }
+        container(displayName = "Say hello", image = "hello-world")
 }
