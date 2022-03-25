@@ -6,7 +6,7 @@ import { ComplexNumber } from 'classes'
 
 export default function valueGenerator(data: WorkerPostMessage, x: number, y: number) {
   const { fractal, mx, my, xCenter, yCenter, cReal, cImaginary } = data
-  const divisor = (mx > my ? mx : my) * 0.25 // 0.25 to interpolate from 0..1 to 0..4
+  const divisor = (mx > my ? mx : my) * 0.25
   switch (fractal) {
     case Fractal.Mandelbrot:
       return mandelbrotGenerator(new ComplexNumber(x / divisor + xCenter, y / divisor - yCenter))
