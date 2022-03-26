@@ -1,0 +1,24 @@
+FROM ubuntu
+
+WORKDIR /usr/app
+# install required commands
+RUN apt update && apt install sshpass curl -y
+
+# install nodejs and yarn
+RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt install nodejs -y \
+    && npm i -g yarn
+
+# build app
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install
+COPY . .
+RUN yarn build
+
+ARG YANDEX_COMPUTED_CLOUD_USER
+ARG YANDEX_COMPUTED_CLOUD_DESTINATION
+ARG YANDEX_COMPUTED_CLOUD_PASSWORD
+
+RUN sshpass -p $YANDEX_COMPUTED_CLOUD_PASSWORD scp -r ./build $YANDEX_COMPUTED_CLOUD_USER@$YANDEX_COMPUTED_CLOUD_DESTINATION
