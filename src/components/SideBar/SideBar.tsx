@@ -31,15 +31,22 @@ import {
   openDrawer,
   closeDrawer,
   setFractalType,
+  setCalculationProvider,
   downloadImage,
   setImageSizeState,
 } from 'models'
-import { Fractal } from 'enums'
-import { FractalOption, FractalOptions } from 'interfaces'
+import { Fractal, CalculationProvider } from 'enums'
+import {
+  FractalOption,
+  FractalOptions,
+  CalculationProviderOption,
+  CalculationProviderOptions,
+} from 'interfaces'
 import './styles.scss'
 
 const SideBar: React.FC = () => {
-  const { xSize, ySize, xCenter, yCenter, cReal, cImaginary, fractal } = useStore($fractalConfig)
+  const { xSize, ySize, xCenter, yCenter, cReal, cImaginary, fractal, calculationProvider } =
+    useStore($fractalConfig)
   const isImageExists = useStore($isImageExists)
   const { isDrawerOpened, isImageOnFullscreen } = useStore($sidePanelSettings)
 
@@ -50,6 +57,8 @@ const SideBar: React.FC = () => {
     setImageSizeState(event.target.checked)
   const onFractalTypeChange = (fractalType: FractalOption | null) =>
     fractalType && setFractalType(fractalType)
+  const onCalculationProviderChange = (calculationProvider: CalculationProviderOption | null) =>
+    calculationProvider && setCalculationProvider(calculationProvider)
   const onCRealChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
     if (value !== '') setCReal(parseFloat(value))
@@ -166,6 +175,19 @@ const SideBar: React.FC = () => {
                       </Field>
                     </HorizontalLayout>
                   )}
+                  <Field<Value<CalculationProviderOption>>
+                    name='calculationProvider'
+                    label='Select calculation provider'
+                  >
+                    {({ fieldProps }) => (
+                      <Select<CalculationProviderOption>
+                        {...fieldProps}
+                        value={calculationProvider}
+                        onChange={onCalculationProviderChange}
+                        options={CalculationProviderOptions}
+                      />
+                    )}
+                  </Field>
                 </FormSection>
                 <FormSection title='Image center'>
                   <div className='rangesWrapper'>

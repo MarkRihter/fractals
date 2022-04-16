@@ -1,43 +1,66 @@
 import { ComplexNumber } from 'classes'
-import { WorkerReturnMessageType } from 'enums'
+import { CalculationProvider, WorkerReturnMessageType } from 'enums'
 import { WorkerPostMessage } from 'interfaces'
+import init, { render_fractal } from 'wasm/pkg'
 import valueGenerator from './generator'
-
-function postProgress(progress: number) {
-  self.postMessage({ type: WorkerReturnMessageType.RenderInProgress, payload: progress })
-}
 
 self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
   if (e && e.data) {
-    const { myImageData, mx, my } = e.data
+    const { xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary } = e.data
+    switch (e.data.calculationProvider) {
+      case CalculationProvider.Rust:
+        init().then(() =>
+          render_fractal(xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary)
+        )
+        break
+      case CalculationProvider.JS:
+        renderFractal(e.data)
+        break
+    }
+  }
+}
 
-    for (let y = -my / 2; y < my / 2; y++) {
-      const canvasY = y + my / 2
-      postProgress(canvasY / my)
-      for (let x = -mx / 2; x < mx / 2; x++) {
-        const canvasX = x + mx / 2
+function renderFractal(data: WorkerPostMessage) {
+  const { xSize, ySize } = data
+  const pixelData = []
 
-        myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4] = 0
-        myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 1] = 0
-        myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 2] = 0
+  for (let y = -ySize / 2; y < ySize / 2; y++) {
+    const canvasY = y + ySize / 2
+    postProgress(canvasY / ySize)
+    for (let x = -xSize / 2; x < xSize / 2; x++) {
+      const canvasX = x + xSize / 2
 
-        myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 3] = 255
+      pixelData[canvasX * 4 + canvasY * xSize * 4] = 0
+      pixelData[canvasX * 4 + canvasY * xSize * 4 + 1] = 0
+      pixelData[canvasX * 4 + canvasY * xSize * 4 + 2] = 0
 
-        const valueIterator = valueGenerator(e.data, x, y)
+      pixelData[canvasX * 4 + canvasY * xSize * 4 + 3] = 255
 
-        for (let i = 0; i < 100; i++) {
-          const { value } = valueIterator.next()
+      const valueIterator = valueGenerator(data, x, y)
 
-          if (ComplexNumber.module(value) >= 2) {
-            myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4] = 255
-            myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 1] = 255
-            myImageData.data[canvasX * 4 + canvasY * myImageData.width * 4 + 2] = 255
-            break
-          }
+      for (let i = 0; i < 100; i++) {
+        const { value } = valueIterator.next()
+
+        if (ComplexNumber.module(value) >= 2) {
+          pixelData[canvasX * 4 + canvasY * xSize * 4] = 255
+          pixelData[canvasX * 4 + canvasY * xSize * 4 + 1] = 255
+          pixelData[canvasX * 4 + canvasY * xSize * 4 + 2] = 255
+          break
         }
       }
     }
-
-    self.postMessage({ type: WorkerReturnMessageType.RenderCompleted, payload: myImageData })
   }
+
+  completeRender(pixelData, xSize, ySize)
+}
+
+export function postProgress(progress: number) {
+  self.postMessage({ type: WorkerReturnMessageType.RenderInProgress, payload: progress })
+}
+
+export function completeRender(pixelData: number[], xSize: number, ySize: number) {
+  self.postMessage({
+    type: WorkerReturnMessageType.RenderCompleted,
+    payload: { data: pixelData, xSize: xSize, ySize: ySize },
+  })
 }

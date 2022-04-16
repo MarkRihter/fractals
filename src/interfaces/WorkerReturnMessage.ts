@@ -1,12 +1,18 @@
 import { Optional } from 'interfaces/utils'
-import { WorkerReturnMessageType, Fractal } from 'enums'
+import { WorkerReturnMessageType, Fractal, CalculationProvider } from 'enums'
 
-interface RenderCompleteMessage {
-  type: WorkerReturnMessageType.RenderCompleted
-  payload: ImageData
+export interface RenderCompleteMessagePayload {
+  data: number[]
+  xSize: number
+  ySize: number
 }
 
-interface RenderInProgressMessage {
+export interface RenderCompleteMessage {
+  type: WorkerReturnMessageType.RenderCompleted
+  payload: RenderCompleteMessagePayload
+}
+
+export interface RenderInProgressMessage {
   type: WorkerReturnMessageType.RenderInProgress
   payload: Optional<number>
 }
@@ -14,10 +20,10 @@ interface RenderInProgressMessage {
 export type WorkerReturnMessage = RenderCompleteMessage | RenderInProgressMessage
 
 export interface WorkerPostMessage {
+  calculationProvider: CalculationProvider
   fractal: Fractal
-  myImageData: ImageData
-  mx: number
-  my: number
+  xSize: number
+  ySize: number
   xCenter: number
   yCenter: number
   cReal: number
