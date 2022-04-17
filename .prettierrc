@@ -10,7 +10,7 @@
   "arrowParens": "avoid",
   "overrides": [
     {
-      "files": "src/wasm/pkg",
+      "files": "src/wasm/pkg/rust_wasm.js",
       "options": {
         "semi": true
       }

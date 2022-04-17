@@ -1,4 +1,5 @@
 module.exports = {
+  ignorePatterns: ['src/wasm/pkg/**'],
   env: {
     browser: true,
     es2021: true,

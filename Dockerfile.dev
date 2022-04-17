@@ -2,37 +2,34 @@ FROM ubuntu
 
 WORKDIR /usr/app
 # install required commands
-RUN apt update && apt install curl unzip -y
+RUN apt update && apt install curl unzip build-essential -y
 
 # install nodejs and yarn
-#RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
-#    && bash nodesource_setup.sh \
-#    && apt install nodejs -y \
-#    && npm i -g yarn
+RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt install nodejs -y \
+    && npm i -g yarn
 
 # install aws-cli
-#RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-#    && unzip awscliv2.zip \
-#    && ./aws/install
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install
 
 # install rust and wasm-pack
- RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal -y \
+ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
     && . $HOME/.cargo/env \
-    && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y \
-    && . $HOME/.cargo/env \
+    && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 # build app
-#COPY package.json .
-#COPY yarn.lock .
-#RUN yarn install
-#COPY . .
-#RUN yarn build
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install
+COPY . .
+RUN export PATH=$HOME/.cargo/bin:$PATH && yarn run build
 
 # load to yandex cloud object storage
-#ARG YANDEX_CLOUD_KEY_ID
-#ARG YANDEX_CLOUD_SECRET
+ARG YANDEX_CLOUD_KEY_ID
+ARG YANDEX_CLOUD_SECRET
 
-#RUN aws configure set aws_access_key_id $YANDEX_CLOUD_KEY_ID && aws configure set aws_secret_access_key $YANDEX_CLOUD_SECRET && aws configure set default.region ru-central1
-#RUN aws s3 --endpoint-url=https://storage.yandexcloud.net cp --recursive ./build s3://fractal-web
-
-RUN which wasm-pack
+RUN aws configure set aws_access_key_id $YANDEX_CLOUD_KEY_ID && aws configure set aws_secret_access_key $YANDEX_CLOUD_SECRET && aws configure set default.region ru-central1
+RUN aws s3 --endpoint-url=https://storage.yandexcloud.net cp --recursive ./build s3://fractal-web
