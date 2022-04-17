@@ -16,9 +16,8 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     && ./aws/install
 
 # install rust and wasm-pack
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | RUSTUP_HOME=/opt/rust CARGO_HOME=/opt/rust sh -s -- -y \
-    && echo 'export RUSTUP_HOME=/opt/rust' | tee -a /etc/profile.d/rust.sh \
-    && echo 'export PATH=$PATH:/opt/rust/bin' | tee -a /etc/profile.d/rust.sh \
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal -y \
+    && source $HOME/.cargo/env \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 # build app
