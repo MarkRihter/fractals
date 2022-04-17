@@ -29,11 +29,10 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "prettify": "prettier --write src/wasm/pkg/*.js",
     "wasm:build": "wasm-pack build src/wasm --target web",
-    "prestart": "yarn run wasm:build & yarn run prettify",
+    "prestart": "yarn run wasm:build",
     "start": "react-scripts start",
-    "prebuild": "yarn run wasm:build & yarn run prettify",
+    "prebuild": "yarn run wasm:build",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
   },
