@@ -8,9 +8,7 @@ job("yandex dev environment") {
     docker {
         startOn {
             gitPush {
-                branchFilter {
-                    +"refs/heads/develop"
-                }
+                branchFilter = "refs/heads/develop"
             }
         }
 
@@ -26,9 +24,7 @@ job("yandex dev environment") {
     docker {
         startOn {
             gitPush {
-                branchFilter {
-                    +"refs/heads/main"
-                }
+                branchFilter = "refs/heads/main"
             }
         }
 
