@@ -20,7 +20,9 @@ job("yandex dev environment") {
             args["YANDEX_CLOUD_SECRET"] = "${'$'}YANDEX_CLOUD_SECRET"
         }
     }
+}
 
+job("yandex prod environment") {
     docker {
         startOn {
             gitPush {
