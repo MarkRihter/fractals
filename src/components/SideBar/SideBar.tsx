@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useStore } from 'effector-react'
 import Form, {
   FormHeader,
@@ -10,11 +10,12 @@ import Form, {
 } from '@atlaskit/form'
 import SettingsIcon from '@atlaskit/icon/glyph/settings'
 import DownloadIcon from '@atlaskit/icon/glyph/download'
+import VidFullScreenOnIcon from '@atlaskit/icon/glyph/vid-full-screen-on'
+import MediaServicesFullScreenIcon from '@atlaskit/icon/glyph/media-services/full-screen'
 import Drawer from '@atlaskit/drawer'
 import Button from '@atlaskit/button'
 import Range from '@atlaskit/range'
 import TextField from '@atlaskit/textfield'
-import { Checkbox } from '@atlaskit/checkbox'
 import Select, { ValueType as Value } from '@atlaskit/select'
 import { HorizontalLayout } from 'components'
 import {
@@ -35,13 +36,15 @@ import {
   downloadImage,
   setImageSizeState,
 } from 'models'
-import { Fractal, CalculationProvider } from 'enums'
+import { Fractal } from 'enums'
 import {
   FractalOption,
   FractalOptions,
   CalculationProviderOption,
   CalculationProviderOptions,
 } from 'interfaces'
+import { useScreenSize } from 'utils'
+import breakpoints from 'styles/breakpoints.module.scss'
 import './styles.scss'
 
 const SideBar: React.FC = () => {
@@ -49,12 +52,12 @@ const SideBar: React.FC = () => {
     useStore($fractalConfig)
   const isImageExists = useStore($isImageExists)
   const { isDrawerOpened, isImageOnFullscreen } = useStore($sidePanelSettings)
+  const screenSize = useScreenSize()
 
   const onDrawerClose = () => closeDrawer()
   const onDrawerOpen = () => openDrawer()
   const onImageDownload = () => downloadImage()
-  const onImageSizeChanged = (event: ChangeEvent<HTMLInputElement>) =>
-    setImageSizeState(event.target.checked)
+  const onImageSizeChanged = () => setImageSizeState(!isImageOnFullscreen)
   const onFractalTypeChange = (fractalType: FractalOption | null) =>
     fractalType && setFractalType(fractalType)
   const onCalculationProviderChange = (calculationProvider: CalculationProviderOption | null) =>
@@ -73,34 +76,51 @@ const SideBar: React.FC = () => {
     drawFractal()
   }
 
+  const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
+  const ImageScreenCoverIcon = isImageOnFullscreen
+    ? MediaServicesFullScreenIcon
+    : VidFullScreenOnIcon
+
+  const ImageScreenCoverIconLabel = isImageOnFullscreen ? 'cover' : 'contain'
+
   return (
     <>
       <div className='drawerButtonWrapper'>
         <Button
+          className='drawerButton'
           iconBefore={<SettingsIcon label='settings' />}
           appearance='subtle'
           onClick={onDrawerOpen}
         >
-          Configuration
+          {!isScreenSmall && 'Configuration'}
         </Button>
         {isImageExists && (
           <>
             <Button
+              className='drawerButton'
               iconBefore={<DownloadIcon label='download' />}
               appearance='primary'
               onClick={onImageDownload}
             >
-              Save image
+              {!isScreenSmall && 'Save image'}
             </Button>
-            <Checkbox
-              onChange={onImageSizeChanged}
-              isChecked={isImageOnFullscreen}
-              label='On full screen'
-            />
+            <Button
+              isSelected={isImageOnFullscreen}
+              className='drawerButton'
+              iconBefore={<ImageScreenCoverIcon label={`set image ${ImageScreenCoverIconLabel}`} />}
+              appearance='primary'
+              onClick={onImageSizeChanged}
+            >
+              {!isScreenSmall && 'Full screen'}
+            </Button>
           </>
         )}
       </div>
-      <Drawer width='medium' onClose={onDrawerClose} isOpen={isDrawerOpened}>
+      <Drawer
+        width={isScreenSmall ? 'full' : 'medium'}
+        onClose={onDrawerClose}
+        isOpen={isDrawerOpened}
+      >
         <div className='drawerContent'>
           <Form onSubmit={onSubmit}>
             {({ formProps }) => (

@@ -1,3 +1,5 @@
+@import 'src/styles/breakpoints.module';
+
 .drawerButtonWrapper {
   display: grid;
   gap: 10px;
@@ -7,11 +9,33 @@
   background-color: white;
   padding: 15px;
   border-radius: 3px;
+
+  @include smallScreen {
+    grid-template-columns: repeat(3, min-content);
+    direction: rtl;
+    gap: 5px;
+    top: unset;
+    left: unset;
+    bottom: 20px;
+    right: 20px;
+    padding: 5px;
+  }
 }
 
-.drawerContent {
-  padding: 3px 30px 0 0;
+.drawerButton.drawerButton {
+  @include smallScreen {
+    width: 50px;
+    height: 50px;
+  }
 }
+
+//.drawerContent {
+//  overflow: hidden;
+//  padding: 3px 30px 30px 0;
+//  h2 {
+//    overflow: visible;
+//  }
+//}
 
 .rangesWrapper {
   max-width: 50%;

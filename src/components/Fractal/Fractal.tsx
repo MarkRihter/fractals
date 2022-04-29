@@ -6,20 +6,26 @@ import Button from '@atlaskit/button'
 import ProgressBar from '@atlaskit/progress-bar'
 import { CenterLayout } from 'components'
 import { $fractalConfig, $sidePanelSettings, drawFractal, openDrawer } from 'models'
+import { useScreenSize } from 'utils'
+import breakpoints from 'styles/breakpoints.module.scss'
 import './styles.scss'
 
 const Fractal: React.FC = () => {
   const { img, isCalculating, progress } = useStore($fractalConfig)
   const { isImageOnFullscreen } = useStore($sidePanelSettings)
+  const screenSize = useScreenSize()
 
   const render = () => drawFractal()
   const configure = () => openDrawer()
+
+  const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
 
   return (
     <div className='fractal'>
       {!img && !isCalculating && (
         <CenterLayout className='emptyCaptionWrapper'>
           <EmptyState
+            width={isScreenSmall ? 'narrow' : 'wide'}
             header='No fractal had been rendered'
             description='You can set up custom fractal configuration or render an image'
             primaryAction={
