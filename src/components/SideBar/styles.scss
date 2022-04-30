@@ -1,4 +1,5 @@
 @import 'src/styles/breakpoints.module';
+@import 'src/styles/common.module';
 
 .drawerButtonWrapper {
   display: grid;
@@ -29,13 +30,34 @@
   }
 }
 
-//.drawerContent {
-//  overflow: hidden;
-//  padding: 3px 30px 30px 0;
-//  h2 {
-//    overflow: visible;
-//  }
-//}
+.sidebar {
+  overflow: hidden;
+  width: 100%;
+}
+
+.drawerContent {
+  padding-top: 30px;
+  height: 100%;
+  overflow: hidden;
+  h2 {
+    overflow: visible;
+    margin-bottom: 5px;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.settings {
+  @include styledScrollbar;
+  flex: 1;
+  overflow-y: scroll;
+  padding: 0 40px calc(40px + var(--addressBarHeight, 0)) 0;
+}
 
 .rangesWrapper {
   max-width: 50%;

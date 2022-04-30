@@ -12,13 +12,11 @@ export function useScreenSize() {
   })
 
   useEffect(() => {
-    const onResize = (e: Event) => {
-      if (e.type === 'resize') {
-        setScreenSize({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        })
-      }
+    const onResize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
     }
 
     window.addEventListener('resize', onResize)

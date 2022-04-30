@@ -117,140 +117,147 @@ const SideBar: React.FC = () => {
         )}
       </div>
       <Drawer
-        width={isScreenSmall ? 'full' : 'medium'}
+        width={isScreenSmall ? 'extended' : 'medium'}
         onClose={onDrawerClose}
         isOpen={isDrawerOpened}
+        overrides={{
+          Content: {
+            component: ({ children }) => <div className='sidebar'>{children}</div>,
+          },
+        }}
       >
         <div className='drawerContent'>
           <Form onSubmit={onSubmit}>
             {({ formProps }) => (
-              <form {...formProps}>
-                <FormHeader title='Fractal configuration' />
-                <FormSection title='Image size'>
-                  <div className='rangesWrapper'>
-                    <RangeField name='xSize' defaultValue={xSize} label={`X size: ${xSize}`}>
+              <form {...formProps} className='form'>
+                <FormHeader title='Configuration' />
+                <div className='settings'>
+                  <FormSection title='Image size'>
+                    <div className='rangesWrapper'>
+                      <RangeField name='xSize' defaultValue={xSize} label={`X size: ${xSize}`}>
+                        {({ fieldProps }) => (
+                          <Range
+                            {...fieldProps}
+                            step={100}
+                            min={100}
+                            max={5000}
+                            value={xSize}
+                            onChange={setXSize}
+                          />
+                        )}
+                      </RangeField>
+                      <RangeField name='ySize' defaultValue={ySize} label={`Y size: ${ySize}`}>
+                        {({ fieldProps }) => (
+                          <Range
+                            {...fieldProps}
+                            step={100}
+                            min={100}
+                            max={5000}
+                            value={ySize}
+                            onChange={setYSize}
+                          />
+                        )}
+                      </RangeField>
+                    </div>
+                  </FormSection>
+                  <FormSection title='Fractal settings'>
+                    <Field<Value<FractalOption>> name='fractal' label='Select fractal type'>
                       {({ fieldProps }) => (
-                        <Range
+                        <Select<FractalOption>
                           {...fieldProps}
-                          step={100}
-                          min={100}
-                          max={5000}
-                          value={xSize}
-                          onChange={setXSize}
+                          value={fractal}
+                          onChange={onFractalTypeChange}
+                          options={FractalOptions}
                         />
                       )}
-                    </RangeField>
-                    <RangeField name='ySize' defaultValue={ySize} label={`Y size: ${ySize}`}>
-                      {({ fieldProps }) => (
-                        <Range
-                          {...fieldProps}
-                          step={100}
-                          min={100}
-                          max={5000}
-                          value={ySize}
-                          onChange={setYSize}
-                        />
-                      )}
-                    </RangeField>
-                  </div>
-                </FormSection>
-                <FormSection title='Fractal settings'>
-                  <Field<Value<FractalOption>> name='fractal' label='Select fractal type'>
-                    {({ fieldProps }) => (
-                      <Select<FractalOption>
-                        {...fieldProps}
-                        value={fractal}
-                        onChange={onFractalTypeChange}
-                        options={FractalOptions}
-                      />
+                    </Field>
+                    {fractal.value === Fractal.Julia && (
+                      <HorizontalLayout gap='10px'>
+                        <Field name='cReal' label='C real' isRequired>
+                          {({ fieldProps, error, valid }) => (
+                            <>
+                              <TextField
+                                {...fieldProps}
+                                type='number'
+                                value={cReal}
+                                onChange={onCRealChange}
+                              />
+                              {!valid && error && <ErrorMessage>{error}</ErrorMessage>}
+                            </>
+                          )}
+                        </Field>
+                        <Field name='cImaginary' label='C imaginary' isRequired>
+                          {({ fieldProps, error, valid }) => (
+                            <>
+                              <TextField
+                                {...fieldProps}
+                                type='number'
+                                value={cImaginary}
+                                onChange={onCImaginaryChange}
+                              />
+                              {!valid && error && <ErrorMessage>{error}</ErrorMessage>}
+                            </>
+                          )}
+                        </Field>
+                      </HorizontalLayout>
                     )}
-                  </Field>
-                  {fractal.value === Fractal.Julia && (
-                    <HorizontalLayout gap='10px'>
-                      <Field name='cReal' label='C real' isRequired>
-                        {({ fieldProps, error, valid }) => (
-                          <>
-                            <TextField
-                              {...fieldProps}
-                              type='number'
-                              value={cReal}
-                              onChange={onCRealChange}
-                            />
-                            {!valid && error && <ErrorMessage>{error}</ErrorMessage>}
-                          </>
-                        )}
-                      </Field>
-                      <Field name='cImaginary' label='C imaginary' isRequired>
-                        {({ fieldProps, error, valid }) => (
-                          <>
-                            <TextField
-                              {...fieldProps}
-                              type='number'
-                              value={cImaginary}
-                              onChange={onCImaginaryChange}
-                            />
-                            {!valid && error && <ErrorMessage>{error}</ErrorMessage>}
-                          </>
-                        )}
-                      </Field>
-                    </HorizontalLayout>
-                  )}
-                  <Field<Value<CalculationProviderOption>>
-                    name='calculationProvider'
-                    label='Select calculation provider'
-                  >
-                    {({ fieldProps }) => (
-                      <Select<CalculationProviderOption>
-                        {...fieldProps}
-                        value={calculationProvider}
-                        onChange={onCalculationProviderChange}
-                        options={CalculationProviderOptions}
-                      />
-                    )}
-                  </Field>
-                </FormSection>
-                <FormSection title='Image center'>
-                  <div className='rangesWrapper'>
-                    <RangeField
-                      name='xCenter'
-                      defaultValue={xCenter}
-                      label={`X center: ${xCenter}`}
+                    <Field<Value<CalculationProviderOption>>
+                      name='calculationProvider'
+                      label='Select calculation provider'
                     >
                       {({ fieldProps }) => (
-                        <Range
+                        <Select<CalculationProviderOption>
                           {...fieldProps}
-                          step={0.01}
-                          min={-2}
-                          max={2}
-                          value={xCenter}
-                          onChange={setXCenter}
+                          value={calculationProvider}
+                          onChange={onCalculationProviderChange}
+                          options={CalculationProviderOptions}
                         />
                       )}
-                    </RangeField>
-                    <RangeField
-                      name='yCenter'
-                      defaultValue={yCenter}
-                      label={`Y center: ${yCenter}`}
-                    >
-                      {({ fieldProps }) => (
-                        <Range
-                          {...fieldProps}
-                          step={0.01}
-                          min={-2}
-                          max={2}
-                          value={yCenter}
-                          onChange={setYCenter}
-                        />
-                      )}
-                    </RangeField>
-                  </div>
-                </FormSection>
+                    </Field>
+                  </FormSection>
+                  <FormSection title='Image center'>
+                    <div className='rangesWrapper'>
+                      <RangeField
+                        name='xCenter'
+                        defaultValue={xCenter}
+                        label={`X center: ${xCenter}`}
+                      >
+                        {({ fieldProps }) => (
+                          <Range
+                            {...fieldProps}
+                            step={0.01}
+                            min={-2}
+                            max={2}
+                            value={xCenter}
+                            onChange={setXCenter}
+                          />
+                        )}
+                      </RangeField>
+                      <RangeField
+                        name='yCenter'
+                        defaultValue={yCenter}
+                        label={`Y center: ${yCenter}`}
+                      >
+                        {({ fieldProps }) => (
+                          <Range
+                            {...fieldProps}
+                            step={0.01}
+                            min={-2}
+                            max={2}
+                            value={yCenter}
+                            onChange={setYCenter}
+                          />
+                        )}
+                      </RangeField>
+                    </div>
+                  </FormSection>
 
-                <FormFooter align='start'>
-                  <Button appearance='primary' type='submit'>
-                    Render fractal
-                  </Button>
-                </FormFooter>
+                  <FormFooter align='start'>
+                    <Button appearance='primary' type='submit'>
+                      Render fractal
+                    </Button>
+                  </FormFooter>
+                </div>
               </form>
             )}
           </Form>
