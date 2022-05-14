@@ -51,7 +51,7 @@ const Fractal: React.FC = () => {
           </CenterLayout>
         </div>
       )}
-      <img src={img} alt=' ' className={clsx('img', isImageOnFullscreen && 'onFullscreen')} />
+      <img src={img} alt='fractal' className={clsx('img', isImageOnFullscreen && 'onFullscreen')} />
     </div>
   )
 }
