@@ -23,10 +23,17 @@ self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
 function renderFractal(data: WorkerPostMessage) {
   const { xSize, ySize } = data
   const pixelData = []
+  let dispatchedProgress = 0
 
   for (let y = -ySize / 2; y < ySize / 2; y++) {
     const canvasY = y + ySize / 2
-    postProgress(canvasY / ySize)
+
+    const currentProgress = Number((canvasY / ySize).toFixed(2))
+    if (currentProgress > dispatchedProgress) {
+      dispatchedProgress = currentProgress
+      postProgress(currentProgress)
+    }
+
     for (let x = -xSize / 2; x < xSize / 2; x++) {
       const canvasX = x + xSize / 2
 

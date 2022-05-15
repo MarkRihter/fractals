@@ -34,7 +34,6 @@ import {
   setFractalType,
   setCalculationProvider,
   downloadImage,
-  setImageSizeState,
 } from 'models'
 import { Fractal } from 'enums'
 import {
@@ -51,13 +50,12 @@ const SideBar: React.FC = () => {
   const { xSize, ySize, xCenter, yCenter, cReal, cImaginary, fractal, calculationProvider } =
     useStore($fractalConfig)
   const isImageExists = useStore($isImageExists)
-  const { isDrawerOpened, isImageOnFullscreen } = useStore($sidePanelSettings)
+  const { isDrawerOpened } = useStore($sidePanelSettings)
   const screenSize = useScreenSize()
 
   const onDrawerClose = () => closeDrawer()
   const onDrawerOpen = () => openDrawer()
   const onImageDownload = () => downloadImage()
-  const onImageSizeChanged = () => setImageSizeState(!isImageOnFullscreen)
   const onFractalTypeChange = (fractalType: FractalOption | null) =>
     fractalType && setFractalType(fractalType)
   const onCalculationProviderChange = (calculationProvider: CalculationProviderOption | null) =>
@@ -77,11 +75,6 @@ const SideBar: React.FC = () => {
   }
 
   const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
-  const ImageScreenCoverIcon = isImageOnFullscreen
-    ? MediaServicesFullScreenIcon
-    : VidFullScreenOnIcon
-
-  const ImageScreenCoverIconLabel = isImageOnFullscreen ? 'cover' : 'contain'
 
   return (
     <>
@@ -103,15 +96,6 @@ const SideBar: React.FC = () => {
               onClick={onImageDownload}
             >
               {!isScreenSmall && 'Save image'}
-            </Button>
-            <Button
-              isSelected={isImageOnFullscreen}
-              className='drawerButton'
-              iconBefore={<ImageScreenCoverIcon label={`set image ${ImageScreenCoverIconLabel}`} />}
-              appearance='primary'
-              onClick={onImageSizeChanged}
-            >
-              {!isScreenSmall && 'Full screen'}
             </Button>
           </>
         )}

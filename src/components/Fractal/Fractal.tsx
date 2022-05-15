@@ -12,7 +12,6 @@ import './styles.scss'
 
 const Fractal: React.FC = () => {
   const { img, isCalculating, progress } = useStore($fractalConfig)
-  const { isImageOnFullscreen } = useStore($sidePanelSettings)
   const screenSize = useScreenSize()
 
   const render = () => drawFractal()
@@ -51,7 +50,7 @@ const Fractal: React.FC = () => {
           </CenterLayout>
         </div>
       )}
-      <img src={img} alt='fractal' className={clsx('img', isImageOnFullscreen && 'onFullscreen')} />
+      <img src={img} alt='fractal' className='img' />
     </div>
   )
 }

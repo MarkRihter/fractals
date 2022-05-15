@@ -23,10 +23,16 @@ pub fn render_fractal(
     c_imaginary: f64,
 ) {
     let mut payload = vec![0u8; mx * my * 4];
+    let mut dispatched_progress: f64 = 0.0;
 
     for canvasY in 0..my {
         let y: f64 = canvasY as f64 - my as f64 / 2.0;
-        postProgress(canvasY as f64 / my as f64);
+
+        let current_progress = (canvasY as f64 / my as f64 * 100.0).trunc() / 100.0;
+        if current_progress > dispatched_progress {
+            dispatched_progress = current_progress;
+            postProgress(current_progress);
+        }
 
         for canvasX in 0..mx {
             let x: f64 = canvasX as f64 - mx as f64 / 2.0;
@@ -45,7 +51,7 @@ pub fn render_fractal(
                     y as f64 / divisor - y_center,
                 ));
 
-                for i in 0..100 {
+                for _ in 0..100 {
                     if mandelbrot.next().unwrap_or(Complex::from(2.0)).norm() >= 2.0 {
                         payload[canvasX * 4 + canvasY * mx * 4] = 255;
                         payload[canvasX * 4 + canvasY * mx * 4 + 1] = 255;
@@ -59,7 +65,7 @@ pub fn render_fractal(
                     Complex::new(x as f64 / divisor + x_center, y as f64 / divisor - y_center),
                 );
 
-                for i in 0..100 {
+                for _ in 0..100 {
                     if julia.next().unwrap_or(Complex::from(2.0)).norm() >= 2.0 {
                         payload[canvasX * 4 + canvasY * mx * 4] = 255;
                         payload[canvasX * 4 + canvasY * mx * 4 + 1] = 255;
