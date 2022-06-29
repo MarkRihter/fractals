@@ -1,77 +1,61 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
-import { useStore } from 'effector-react'
+import React from 'react'
 import Form, {
   FormHeader,
   FormSection,
   FormFooter,
   Field,
-  RangeField,
   ErrorMessage,
+  OnSubmitHandler,
 } from '@atlaskit/form'
 import SettingsIcon from '@atlaskit/icon/glyph/settings'
 import DownloadIcon from '@atlaskit/icon/glyph/download'
-import VidFullScreenOnIcon from '@atlaskit/icon/glyph/vid-full-screen-on'
-import MediaServicesFullScreenIcon from '@atlaskit/icon/glyph/media-services/full-screen'
-import Drawer from '@atlaskit/drawer'
+import DrawerComponent from '@atlaskit/drawer'
 import Button from '@atlaskit/button'
-import Range from '@atlaskit/range'
 import TextField from '@atlaskit/textfield'
 import Select, { ValueType as Value } from '@atlaskit/select'
 import { HorizontalLayout } from 'components'
-import {
-  $fractalConfig,
-  $sidePanelSettings,
-  $isImageExists,
-  setXSize,
-  setYSize,
-  setXCenter,
-  setYCenter,
-  setCReal,
-  setCImaginary,
-  drawFractal,
-  openDrawer,
-  closeDrawer,
-  setFractalType,
-  setCalculationProvider,
-  downloadImage,
-} from 'models'
-import { Fractal } from 'enums'
+import { Fractal, Drawer } from 'models'
+import { FractalType } from 'enums'
 import {
   FractalOption,
   FractalOptions,
   CalculationProviderOption,
   CalculationProviderOptions,
+  Optional,
 } from 'interfaces'
-import { useScreenSize } from 'utils'
+import { useObserver, useScreenSize } from 'utils'
+import { IConfigurationFields } from 'models'
 import breakpoints from 'styles/breakpoints.module.scss'
 import './styles.scss'
 
 const SideBar: React.FC = () => {
-  const { xSize, ySize, xCenter, yCenter, cReal, cImaginary, fractal, calculationProvider } =
-    useStore($fractalConfig)
-  const isImageExists = useStore($isImageExists)
-  const { isDrawerOpened } = useStore($sidePanelSettings)
   const screenSize = useScreenSize()
+  const isDrawerOpened = useObserver(Drawer.isDrawerOpened)
+  const img = useObserver(Fractal.img)
 
-  const onDrawerClose = () => closeDrawer()
-  const onDrawerOpen = () => openDrawer()
-  const onImageDownload = () => downloadImage()
-  const onFractalTypeChange = (fractalType: FractalOption | null) =>
-    fractalType && setFractalType(fractalType)
-  const onCalculationProviderChange = (calculationProvider: CalculationProviderOption | null) =>
-    calculationProvider && setCalculationProvider(calculationProvider)
-  const onCRealChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
-    if (value !== '') setCReal(parseFloat(value))
-  }
-  const onCImaginaryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
-    if (value !== '') setCImaginary(parseFloat(value))
+  const onSubmit: OnSubmitHandler<IConfigurationFields> = values => {
+    for (const key in values) {
+      if (!isNaN(+(values as any)[key])) (values as any)[key] = +(values as any)[key]
+    }
+
+    Fractal.setConfiguration(values)
+    Fractal.drawFractal()
+    Drawer.closeDrawer()
   }
 
-  const onSubmit = () => {
-    onDrawerClose()
-    drawFractal()
+  const validateSize = (value: Optional<string>) => {
+    if (!value) return 'Please, enter correct integer'
+    if (!/^\d*$/.test(value)) return 'Please, enter correct integer'
+    if (+value < 10) return 'Size must be at least 10 pixels'
+
+    return undefined
+  }
+
+  const validatePoint = (value: Optional<string>) => {
+    if (!value) return 'Please, enter correct integer'
+    if (isNaN(+value)) return 'Please, enter correct number'
+
+    return undefined
   }
 
   const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
@@ -83,26 +67,26 @@ const SideBar: React.FC = () => {
           className='drawerButton'
           iconBefore={<SettingsIcon label='settings' />}
           appearance='subtle'
-          onClick={onDrawerOpen}
+          onClick={Drawer.openDrawer}
         >
           {!isScreenSmall && 'Configuration'}
         </Button>
-        {isImageExists && (
+        {!!img && (
           <>
             <Button
               className='drawerButton'
               iconBefore={<DownloadIcon label='download' />}
               appearance='primary'
-              onClick={onImageDownload}
+              onClick={Fractal.downloadImage}
             >
               {!isScreenSmall && 'Save image'}
             </Button>
           </>
         )}
       </div>
-      <Drawer
+      <DrawerComponent
         width={isScreenSmall ? 'extended' : 'medium'}
-        onClose={onDrawerClose}
+        onClose={Drawer.closeDrawer}
         isOpen={isDrawerOpened}
         overrides={{
           Content: {
@@ -112,141 +96,134 @@ const SideBar: React.FC = () => {
       >
         <div className='drawerContent'>
           <Form onSubmit={onSubmit}>
-            {({ formProps }) => (
-              <form {...formProps} className='form'>
-                <FormHeader title='Configuration' />
-                <div className='settings'>
-                  <FormSection title='Image size'>
-                    <div className='rangesWrapper'>
-                      <RangeField name='xSize' defaultValue={xSize} label={`X size: ${xSize}`}>
-                        {({ fieldProps }) => (
-                          <Range
-                            {...fieldProps}
-                            step={100}
-                            min={100}
-                            max={5000}
-                            value={xSize}
-                            onChange={setXSize}
-                          />
-                        )}
-                      </RangeField>
-                      <RangeField name='ySize' defaultValue={ySize} label={`Y size: ${ySize}`}>
-                        {({ fieldProps }) => (
-                          <Range
-                            {...fieldProps}
-                            step={100}
-                            min={100}
-                            max={5000}
-                            value={ySize}
-                            onChange={setYSize}
-                          />
-                        )}
-                      </RangeField>
-                    </div>
-                  </FormSection>
-                  <FormSection title='Fractal settings'>
-                    <Field<Value<FractalOption>> name='fractal' label='Select fractal type'>
-                      {({ fieldProps }) => (
-                        <Select<FractalOption>
-                          {...fieldProps}
-                          value={fractal}
-                          onChange={onFractalTypeChange}
-                          options={FractalOptions}
-                        />
-                      )}
-                    </Field>
-                    {fractal.value === Fractal.Julia && (
-                      <HorizontalLayout gap='10px'>
-                        <Field name='cReal' label='C real' isRequired>
-                          {({ fieldProps, error, valid }) => (
+            {({ formProps, getValues }) => {
+              return (
+                <form {...formProps} className='form'>
+                  <FormHeader title='Configuration' />
+                  <div className='settings'>
+                    <FormSection title='Image size'>
+                      <div className='rangesWrapper'>
+                        <Field
+                          name='xSize'
+                          validate={validateSize}
+                          label='Image width'
+                          defaultValue={Fractal.configuration.xSize.toString()}
+                        >
+                          {({ fieldProps, error }) => (
                             <>
-                              <TextField
-                                {...fieldProps}
-                                type='number'
-                                value={cReal}
-                                onChange={onCRealChange}
-                              />
-                              {!valid && error && <ErrorMessage>{error}</ErrorMessage>}
+                              <TextField {...fieldProps} />
+                              {error && <ErrorMessage>{error}</ErrorMessage>}
                             </>
                           )}
                         </Field>
-                        <Field name='cImaginary' label='C imaginary' isRequired>
-                          {({ fieldProps, error, valid }) => (
+                        <Field
+                          name='ySize'
+                          validate={validateSize}
+                          defaultValue={Fractal.configuration.ySize.toString()}
+                          label='Image height'
+                        >
+                          {({ fieldProps, error }) => (
                             <>
-                              <TextField
-                                {...fieldProps}
-                                type='number'
-                                value={cImaginary}
-                                onChange={onCImaginaryChange}
-                              />
-                              {!valid && error && <ErrorMessage>{error}</ErrorMessage>}
+                              <TextField {...fieldProps} />
+                              {error && <ErrorMessage>{error}</ErrorMessage>}
                             </>
                           )}
                         </Field>
-                      </HorizontalLayout>
-                    )}
-                    <Field<Value<CalculationProviderOption>>
-                      name='calculationProvider'
-                      label='Select calculation provider'
-                    >
-                      {({ fieldProps }) => (
-                        <Select<CalculationProviderOption>
-                          {...fieldProps}
-                          value={calculationProvider}
-                          onChange={onCalculationProviderChange}
-                          options={CalculationProviderOptions}
-                        />
+                      </div>
+                    </FormSection>
+                    <FormSection title='Fractal settings'>
+                      <Field<Value<FractalOption>>
+                        defaultValue={Fractal.configuration.fractal}
+                        name='fractal'
+                        label='Select fractal type'
+                      >
+                        {({ fieldProps }) => (
+                          <Select<FractalOption> {...fieldProps} options={FractalOptions} />
+                        )}
+                      </Field>
+                      {getValues().fractal?.value === FractalType.Julia && (
+                        <HorizontalLayout gap='10px'>
+                          <Field
+                            validate={validatePoint}
+                            name='cReal'
+                            label='C real'
+                            defaultValue={Fractal.configuration.cReal.toString()}
+                          >
+                            {({ fieldProps, error }) => (
+                              <>
+                                <TextField {...fieldProps} />
+                                {error && <ErrorMessage>{error}</ErrorMessage>}
+                              </>
+                            )}
+                          </Field>
+                          <Field
+                            validate={validatePoint}
+                            name='cImaginary'
+                            label='C imaginary'
+                            defaultValue={Fractal.configuration.cImaginary.toString()}
+                          >
+                            {({ fieldProps, error }) => (
+                              <>
+                                <TextField {...fieldProps} />
+                                {error && <ErrorMessage>{error}</ErrorMessage>}
+                              </>
+                            )}
+                          </Field>
+                        </HorizontalLayout>
                       )}
-                    </Field>
-                  </FormSection>
-                  <FormSection title='Image center'>
-                    <div className='rangesWrapper'>
-                      <RangeField
-                        name='xCenter'
-                        defaultValue={xCenter}
-                        label={`X center: ${xCenter}`}
+                      <Field<Value<CalculationProviderOption>>
+                        name='calculationProvider'
+                        label='Select calculation provider'
+                        defaultValue={Fractal.configuration.calculationProvider}
                       >
                         {({ fieldProps }) => (
-                          <Range
+                          <Select<CalculationProviderOption>
                             {...fieldProps}
-                            step={0.01}
-                            min={-2}
-                            max={2}
-                            value={xCenter}
-                            onChange={setXCenter}
+                            options={CalculationProviderOptions}
                           />
                         )}
-                      </RangeField>
-                      <RangeField
-                        name='yCenter'
-                        defaultValue={yCenter}
-                        label={`Y center: ${yCenter}`}
-                      >
-                        {({ fieldProps }) => (
-                          <Range
-                            {...fieldProps}
-                            step={0.01}
-                            min={-2}
-                            max={2}
-                            value={yCenter}
-                            onChange={setYCenter}
-                          />
-                        )}
-                      </RangeField>
-                    </div>
-                  </FormSection>
-
-                  <FormFooter align='start'>
-                    <Button appearance='primary' type='submit'>
-                      Render fractal
-                    </Button>
-                  </FormFooter>
-                </div>
-              </form>
-            )}
+                      </Field>
+                    </FormSection>
+                    <FormSection title='Image center'>
+                      <div className='rangesWrapper'>
+                        <Field
+                          name='xCenter'
+                          defaultValue={Fractal.configuration.xCenter.toString()}
+                          label='X center'
+                        >
+                          {({ fieldProps, error }) => (
+                            <>
+                              <TextField {...fieldProps} />
+                              {error && <ErrorMessage>{error}</ErrorMessage>}
+                            </>
+                          )}
+                        </Field>
+                        <Field
+                          name='yCenter'
+                          defaultValue={Fractal.configuration.yCenter.toString()}
+                          label='Y center'
+                        >
+                          {({ fieldProps, error }) => (
+                            <>
+                              <TextField {...fieldProps} />
+                              {error && <ErrorMessage>{error}</ErrorMessage>}
+                            </>
+                          )}
+                        </Field>
+                      </div>
+                    </FormSection>
+                    <FormFooter align='start'>
+                      <Button appearance='primary' type='submit'>
+                        Render fractal
+                      </Button>
+                    </FormFooter>
+                  </div>
+                </form>
+              )
+            }}
           </Form>
         </div>
-      </Drawer>
+      </DrawerComponent>
     </>
   )
 }

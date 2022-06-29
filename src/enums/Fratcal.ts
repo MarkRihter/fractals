@@ -1,4 +1,4 @@
-export const enum Fractal {
+export const enum FractalType {
   Mandelbrot,
   Julia,
 }

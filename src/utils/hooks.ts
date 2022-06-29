@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { BehaviorSubject } from 'rxjs'
 
 type ScreenSize = {
   width: number
@@ -24,4 +25,15 @@ export function useScreenSize() {
   }, [])
 
   return screenSize
+}
+
+export function useObserver<T>(subject: BehaviorSubject<T>) {
+  const [state, setState] = useState(subject.value)
+
+  useEffect(() => {
+    subject.subscribe(setState)
+    return subject.unsubscribe
+  }, [])
+
+  return state
 }

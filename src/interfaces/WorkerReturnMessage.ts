@@ -1,5 +1,5 @@
 import { Optional } from 'interfaces/utils'
-import { WorkerReturnMessageType, Fractal, CalculationProvider } from 'enums'
+import { WorkerReturnMessageType, FractalType, CalculationProvider } from 'enums'
 
 export interface RenderCompleteMessagePayload {
   data: number[]
@@ -21,7 +21,7 @@ export type WorkerReturnMessage = RenderCompleteMessage | RenderInProgressMessag
 
 export interface WorkerPostMessage {
   calculationProvider: CalculationProvider
-  fractal: Fractal
+  fractal: FractalType
   xSize: number
   ySize: number
   xCenter: number

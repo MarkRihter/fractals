@@ -1,12 +1,12 @@
-import { Fractal } from 'enums'
+import { FractalType } from 'enums'
 
 export interface FractalOption {
   label: string
-  value: Fractal
+  value: FractalType
 }
 
 export const FractalOptions: FractalOption[] = [
-  { label: 'Mandelbrot', value: Fractal.Mandelbrot },
-  { label: 'Julia', value: Fractal.Julia },
+  { label: 'Mandelbrot', value: FractalType.Mandelbrot },
+  { label: 'Julia', value: FractalType.Julia },
 ]
 export const DefaultFractal = FractalOptions[0]

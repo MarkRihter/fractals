@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import initWasm from './wasm/pkg'
-import { SideBar, Fractal } from 'components'
+import { SideBar, Canvas } from 'components'
 import { provideAvailableScreenSizeToCss } from 'utils'
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
 
   return (
     <div>
-      <Fractal />
+      <Canvas />
       <SideBar />
     </div>
   )

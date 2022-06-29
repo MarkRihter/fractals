@@ -61,19 +61,6 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/checkbox@^12.3.10":
-  version "12.3.10"
-  resolved "https://registry.npmjs.org/@atlaskit/checkbox/-/checkbox-12.3.10.tgz"
-  integrity sha512-6g0VOTukvobq5MmMmh9tkmb4msqvx474VYRKVNglVsS1G4pnK+4ThhiU/FpZUf3e7E62Qkunn1+o3gf3yOQZkQ==
-  dependencies:
-    "@atlaskit/analytics-next" "^8.2.0"
-    "@atlaskit/ds-lib" "^1.4.0"
-    "@atlaskit/icon" "^21.10.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
-    "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
-
 "@atlaskit/codemod-utils@^3.4.0":
   version "3.4.0"
   resolved "https://registry.npmjs.org/@atlaskit/codemod-utils/-/codemod-utils-3.4.0.tgz"
@@ -144,15 +131,6 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/page-header@^10.2.2":
-  version "10.2.2"
-  resolved "https://registry.npmjs.org/@atlaskit/page-header/-/page-header-10.2.2.tgz"
-  integrity sha512-iDLJFGTKTBprxVCfcZVaW2NyGxziO7+532naBJwq7XL5fY80LDvVi8S0n5v+y/ogEOJRLfReKJM6UYe7ffr9UA==
-  dependencies:
-    "@atlaskit/theme" "^12.0.0"
-    "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
-
 "@atlaskit/portal@^4.0.0":
   version "4.2.5"
   resolved "https://registry.npmjs.org/@atlaskit/portal/-/portal-4.2.5.tgz"
@@ -167,16 +145,6 @@
   integrity sha512-hiDNLpn6/qObmCGnWTQOixFsMDWO0ohXEM7PjzGZeoPO6kCamWxdpREPU0uoHyJgAwqawrtVH8EpNthfZoHXEA==
   dependencies:
     "@atlaskit/ds-lib" "^1.4.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
-    "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
-
-"@atlaskit/range@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.npmjs.org/@atlaskit/range/-/range-6.0.2.tgz"
-  integrity sha512-7rD5f9xjI4ou1TMz2+8D3xXj5+25n045CszmADzv6t5XcIWc3oZpg392+MLnA72gGhDHuHgwdNuyKZRtv4ANgQ==
-  dependencies:
     "@atlaskit/theme" "^12.1.0"
     "@atlaskit/tokens" "^0.8.0"
     "@babel/runtime" "^7.0.0"
@@ -3986,16 +3954,6 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
-
-effector-react@^22.0.6:
-  version "22.0.6"
-  resolved "https://registry.npmjs.org/effector-react/-/effector-react-22.0.6.tgz"
-  integrity sha512-uzVjrh5S94eMeihu8N8eQvLFnZA56VT00etMVovnSyZxujo0f8gtZZebIYOKyYFkGcYUyfiOHRRzBhYpIfAIhg==
-
-effector@^22.2.0:
-  version "22.2.0"
-  resolved "https://registry.npmjs.org/effector/-/effector-22.2.0.tgz"
-  integrity sha512-N0dDgEO3/b9InYkPsoSM5YSJgVwJ1bQ/DWHU7C6sm9+L1CrT6gat0pLvey/ljFPNdNKL0S6MW5DEmDUvzJe1Ng==
 
 ejs@^3.1.6:
   version "3.1.6"
@@ -7875,6 +7833,13 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
+rxjs@^7.5.5:
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
+  integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
+  dependencies:
+    tslib "^2.1.0"
+
 safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
@@ -8628,6 +8593,11 @@ tslib@^2.0.0, tslib@^2.0.3:
   version "2.3.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
+
+tslib@^2.1.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 tsutils@^3.21.0:
   version "3.21.0"

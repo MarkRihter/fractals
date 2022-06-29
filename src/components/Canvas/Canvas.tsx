@@ -1,21 +1,18 @@
 import React from 'react'
-import clsx from 'clsx'
-import { useStore } from 'effector-react'
 import EmptyState from '@atlaskit/empty-state'
 import Button from '@atlaskit/button'
 import ProgressBar from '@atlaskit/progress-bar'
 import { CenterLayout } from 'components'
-import { $fractalConfig, $sidePanelSettings, drawFractal, openDrawer } from 'models'
-import { useScreenSize } from 'utils'
+import { Fractal, Drawer } from 'models'
+import { useObserver, useScreenSize } from 'utils'
 import breakpoints from 'styles/breakpoints.module.scss'
 import './styles.scss'
 
-const Fractal: React.FC = () => {
-  const { img, isCalculating, progress } = useStore($fractalConfig)
+const Canvas: React.FC = () => {
   const screenSize = useScreenSize()
-
-  const render = () => drawFractal()
-  const configure = () => openDrawer()
+  const isCalculating = useObserver(Fractal.isCalculating)
+  const img = useObserver(Fractal.img)
+  const progress = useObserver(Fractal.progress)
 
   const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
 
@@ -28,12 +25,12 @@ const Fractal: React.FC = () => {
             header='No fractal had been rendered'
             description='You can set up custom fractal configuration or render an image'
             primaryAction={
-              <Button isDisabled={isCalculating} appearance='primary' onClick={render}>
+              <Button isDisabled={isCalculating} appearance='primary' onClick={Fractal.drawFractal}>
                 Render
               </Button>
             }
             secondaryAction={
-              <Button isDisabled={isCalculating} onClick={configure}>
+              <Button isDisabled={isCalculating} onClick={Drawer.openDrawer}>
                 Configure
               </Button>
             }
@@ -55,4 +52,4 @@ const Fractal: React.FC = () => {
   )
 }
 
-export default Fractal
+export default Canvas
