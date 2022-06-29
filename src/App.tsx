@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import initWasm from './wasm/pkg'
 import { SideBar, Canvas } from 'components'
-import { provideAvailableScreenSizeToCss } from 'utils'
+import { provideAvailableScreenSizeToCss, requestNotificationPermissions } from 'utils'
 
 function App() {
   useEffect(() => {
     initWasm()
     provideAvailableScreenSizeToCss()
+    requestNotificationPermissions()
   }, [])
 
   return (

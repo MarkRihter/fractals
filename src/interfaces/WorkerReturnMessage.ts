@@ -28,4 +28,5 @@ export interface WorkerPostMessage {
   yCenter: number
   cReal: number
   cImaginary: number
+  zoom: number
 }

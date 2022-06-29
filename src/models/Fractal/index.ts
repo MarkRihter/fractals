@@ -7,7 +7,7 @@ import {
   Optional,
   WorkerReturnMessage,
 } from 'interfaces'
-import { downloadFromCanvas } from 'utils'
+import { downloadFromCanvas, isNotificationAvailableAndNecessary } from 'utils'
 import { WorkerReturnMessageType } from 'enums'
 
 export interface IConfigurationFields {
@@ -19,6 +19,7 @@ export interface IConfigurationFields {
   calculationProvider: CalculationProviderOption
   xCenter: number
   yCenter: number
+  zoom: number
 }
 
 class Fractal {
@@ -32,6 +33,7 @@ class Fractal {
     yCenter: 0,
     cReal: 0,
     cImaginary: 0,
+    zoom: 1,
     fractal: DefaultFractal,
     calculationProvider: DefaultCalculationProvider,
   }
@@ -75,6 +77,8 @@ class Fractal {
     this.canvasContext.putImageData(imageData, 0, 0)
     this.setImage(this.canvas.toDataURL())
     this.setFractalCalculatingState(false)
+
+    if (isNotificationAvailableAndNecessary()) new Notification('Fractal is complete!')
   }
 
   public setConfiguration = (configuration: IConfigurationFields) => {

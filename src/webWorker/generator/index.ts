@@ -5,8 +5,8 @@ import { FractalType } from 'enums'
 import { ComplexNumber } from 'classes'
 
 export default function valueGenerator(data: WorkerPostMessage, x: number, y: number) {
-  const { fractal, xSize, ySize, xCenter, yCenter, cReal, cImaginary } = data
-  const divisor = (xSize > ySize ? xSize : ySize) * 0.25
+  const { fractal, xSize, ySize, xCenter, yCenter, cReal, cImaginary, zoom } = data
+  const divisor = (xSize > ySize ? xSize : ySize) * 0.25 * zoom
   switch (fractal) {
     case FractalType.Mandelbrot:
       return mandelbrotGenerator(new ComplexNumber(x / divisor + xCenter, y / divisor - yCenter))

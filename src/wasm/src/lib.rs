@@ -21,6 +21,7 @@ pub fn render_fractal(
     y_center: f64,
     c_real: f64,
     c_imaginary: f64,
+    zoom: f64,
 ) {
     let mut payload = vec![0u8; mx * my * 4];
     let mut dispatched_progress: f64 = 0.0;
@@ -37,9 +38,9 @@ pub fn render_fractal(
         for canvasX in 0..mx {
             let x: f64 = canvasX as f64 - mx as f64 / 2.0;
             let divisor = if mx > my {
-                mx as f64 * 0.25
+                mx as f64 * 0.25 * zoom
             } else {
-                my as f64 * 0.25
+                my as f64 * 0.25 * zoom
             };
 
             payload[canvasX * 4 + canvasY * mx * 4 + 3] = 255;

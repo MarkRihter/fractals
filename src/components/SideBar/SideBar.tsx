@@ -35,6 +35,7 @@ const SideBar: React.FC = () => {
 
   const onSubmit: OnSubmitHandler<IConfigurationFields> = values => {
     for (const key in values) {
+      // All string fields must be parsed as numbers
       if (!isNaN(+(values as any)[key])) (values as any)[key] = +(values as any)[key]
     }
 
@@ -52,7 +53,7 @@ const SideBar: React.FC = () => {
   }
 
   const validatePoint = (value: Optional<string>) => {
-    if (!value) return 'Please, enter correct integer'
+    if (!value) return 'Please, enter correct number'
     if (isNaN(+value)) return 'Please, enter correct number'
 
     return undefined
@@ -101,36 +102,6 @@ const SideBar: React.FC = () => {
                 <form {...formProps} className='form'>
                   <FormHeader title='Configuration' />
                   <div className='settings'>
-                    <FormSection title='Image size'>
-                      <div className='rangesWrapper'>
-                        <Field
-                          name='xSize'
-                          validate={validateSize}
-                          label='Image width'
-                          defaultValue={Fractal.configuration.xSize.toString()}
-                        >
-                          {({ fieldProps, error }) => (
-                            <>
-                              <TextField {...fieldProps} />
-                              {error && <ErrorMessage>{error}</ErrorMessage>}
-                            </>
-                          )}
-                        </Field>
-                        <Field
-                          name='ySize'
-                          validate={validateSize}
-                          defaultValue={Fractal.configuration.ySize.toString()}
-                          label='Image height'
-                        >
-                          {({ fieldProps, error }) => (
-                            <>
-                              <TextField {...fieldProps} />
-                              {error && <ErrorMessage>{error}</ErrorMessage>}
-                            </>
-                          )}
-                        </Field>
-                      </div>
-                    </FormSection>
                     <FormSection title='Fractal settings'>
                       <Field<Value<FractalOption>>
                         defaultValue={Fractal.configuration.fractal}
@@ -184,33 +155,72 @@ const SideBar: React.FC = () => {
                         )}
                       </Field>
                     </FormSection>
-                    <FormSection title='Image center'>
-                      <div className='rangesWrapper'>
-                        <Field
-                          name='xCenter'
-                          defaultValue={Fractal.configuration.xCenter.toString()}
-                          label='X center'
-                        >
-                          {({ fieldProps, error }) => (
-                            <>
-                              <TextField {...fieldProps} />
-                              {error && <ErrorMessage>{error}</ErrorMessage>}
-                            </>
-                          )}
-                        </Field>
-                        <Field
-                          name='yCenter'
-                          defaultValue={Fractal.configuration.yCenter.toString()}
-                          label='Y center'
-                        >
-                          {({ fieldProps, error }) => (
-                            <>
-                              <TextField {...fieldProps} />
-                              {error && <ErrorMessage>{error}</ErrorMessage>}
-                            </>
-                          )}
-                        </Field>
-                      </div>
+                    <FormSection title='Image settings'>
+                      <Field
+                        name='xSize'
+                        validate={validateSize}
+                        label='Image width'
+                        defaultValue={Fractal.configuration.xSize.toString()}
+                      >
+                        {({ fieldProps, error }) => (
+                          <>
+                            <TextField {...fieldProps} />
+                            {error && <ErrorMessage>{error}</ErrorMessage>}
+                          </>
+                        )}
+                      </Field>
+                      <Field
+                        name='ySize'
+                        validate={validateSize}
+                        defaultValue={Fractal.configuration.ySize.toString()}
+                        label='Image height'
+                      >
+                        {({ fieldProps, error }) => (
+                          <>
+                            <TextField {...fieldProps} />
+                            {error && <ErrorMessage>{error}</ErrorMessage>}
+                          </>
+                        )}
+                      </Field>
+                      <Field
+                        name='xCenter'
+                        validate={validatePoint}
+                        defaultValue={Fractal.configuration.xCenter.toString()}
+                        label='X center'
+                      >
+                        {({ fieldProps, error }) => (
+                          <>
+                            <TextField {...fieldProps} />
+                            {error && <ErrorMessage>{error}</ErrorMessage>}
+                          </>
+                        )}
+                      </Field>
+                      <Field
+                        name='yCenter'
+                        validate={validatePoint}
+                        defaultValue={Fractal.configuration.yCenter.toString()}
+                        label='Y center'
+                      >
+                        {({ fieldProps, error }) => (
+                          <>
+                            <TextField {...fieldProps} />
+                            {error && <ErrorMessage>{error}</ErrorMessage>}
+                          </>
+                        )}
+                      </Field>
+                      <Field
+                        name='zoom'
+                        validate={validatePoint}
+                        defaultValue={Fractal.configuration.zoom.toString()}
+                        label='Zoom'
+                      >
+                        {({ fieldProps, error }) => (
+                          <>
+                            <TextField {...fieldProps} />
+                            {error && <ErrorMessage>{error}</ErrorMessage>}
+                          </>
+                        )}
+                      </Field>
                     </FormSection>
                     <FormFooter align='start'>
                       <Button appearance='primary' type='submit'>

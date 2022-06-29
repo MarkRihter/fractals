@@ -6,11 +6,11 @@ import valueGenerator from './generator'
 
 self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
   if (e && e.data) {
-    const { xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary } = e.data
+    const { xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary, zoom } = e.data
     switch (e.data.calculationProvider) {
       case CalculationProvider.Rust:
         init().then(() =>
-          render_fractal(xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary)
+          render_fractal(xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary, zoom)
         )
         break
       case CalculationProvider.JS:
