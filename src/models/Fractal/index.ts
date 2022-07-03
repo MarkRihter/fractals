@@ -20,6 +20,7 @@ export interface IConfigurationFields {
   xCenter: number
   yCenter: number
   zoom: number
+  iterationsCount: number
 }
 
 class Fractal {
@@ -34,6 +35,7 @@ class Fractal {
     cReal: 0,
     cImaginary: 0,
     zoom: 1,
+    iterationsCount: 100,
     fractal: DefaultFractal,
     calculationProvider: DefaultCalculationProvider,
   }
@@ -72,9 +74,12 @@ class Fractal {
   private renderImageDataOnCanvas = (data: number[], xSize: number, ySize: number) => {
     console.timeEnd('calculation')
     if (!this.canvasContext) return
+
     const imageData = new ImageData(xSize, ySize)
     imageData.data.set(data)
     this.canvasContext.putImageData(imageData, 0, 0)
+    this.canvasContext.imageSmoothingEnabled = false
+    this.canvasContext.imageSmoothingQuality = 'low'
     this.setImage(this.canvas.toDataURL())
     this.setFractalCalculatingState(false)
 
@@ -82,7 +87,7 @@ class Fractal {
   }
 
   public setConfiguration = (configuration: IConfigurationFields) => {
-    this.configuration = configuration
+    this.configuration = { ...this.configuration, ...configuration }
 
     this.canvas.width = configuration.xSize
     this.canvas.height = configuration.ySize

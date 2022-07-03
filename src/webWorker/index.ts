@@ -6,11 +6,22 @@ import valueGenerator from './generator'
 
 self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
   if (e && e.data) {
-    const { xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary, zoom } = e.data
+    const { xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary, zoom, iterationsCount } =
+      e.data
     switch (e.data.calculationProvider) {
       case CalculationProvider.Rust:
         init().then(() =>
-          render_fractal(xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary, zoom)
+          render_fractal(
+            xSize,
+            ySize,
+            fractal,
+            xCenter,
+            yCenter,
+            cReal,
+            cImaginary,
+            zoom,
+            iterationsCount
+          )
         )
         break
       case CalculationProvider.JS:
@@ -21,7 +32,7 @@ self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
 }
 
 function renderFractal(data: WorkerPostMessage) {
-  const { xSize, ySize } = data
+  const { xSize, ySize, iterationsCount } = data
   const pixelData = []
   let dispatchedProgress = 0
 
@@ -45,13 +56,21 @@ function renderFractal(data: WorkerPostMessage) {
 
       const valueIterator = valueGenerator(data, x, y)
 
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < iterationsCount; i++) {
         const { value } = valueIterator.next()
 
         if (ComplexNumber.module(value) >= 2) {
-          pixelData[canvasX * 4 + canvasY * xSize * 4] = 255
-          pixelData[canvasX * 4 + canvasY * xSize * 4 + 1] = 255
-          pixelData[canvasX * 4 + canvasY * xSize * 4 + 2] = 255
+          const continuesIndexLog = i + 1 - Math.log(2) / ComplexNumber.module(value) / Math.log(2)
+
+          pixelData[canvasX * 4 + canvasY * xSize * 4] =
+            Math.sin(0.016 * continuesIndexLog + 2) * 100 + 155
+
+          pixelData[canvasX * 4 + canvasY * xSize * 4 + 1] =
+            Math.sin(0.014 * continuesIndexLog + 3) * 100 + 155
+
+          pixelData[canvasX * 4 + canvasY * xSize * 4 + 2] =
+            Math.sin(0.08 * continuesIndexLog + 4) * 100 + 155
+
           break
         }
       }

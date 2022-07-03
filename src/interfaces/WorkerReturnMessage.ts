@@ -29,4 +29,5 @@ export interface WorkerPostMessage {
   cReal: number
   cImaginary: number
   zoom: number
+  iterationsCount: number
 }

@@ -32,7 +32,9 @@ export function useObserver<T>(subject: BehaviorSubject<T>) {
 
   useEffect(() => {
     subject.subscribe(setState)
-    return subject.unsubscribe
+    return () => {
+      subject.unsubscribe()
+    }
   }, [])
 
   return state

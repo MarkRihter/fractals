@@ -58,3 +58,9 @@
   overflow-y: scroll;
   padding: 0 40px calc(40px + var(--addressBarHeight, 0)) 0;
 }
+
+.cPart {
+  gap: 10px;
+  min-height: 120px;
+  align-items: start !important;
+}

@@ -34,9 +34,10 @@ const SideBar: React.FC = () => {
   const img = useObserver(Fractal.img)
 
   const onSubmit: OnSubmitHandler<IConfigurationFields> = values => {
-    for (const key in values) {
+    const valuesWithNumbers = values as any
+    for (const key in valuesWithNumbers) {
       // All string fields must be parsed as numbers
-      if (!isNaN(+(values as any)[key])) (values as any)[key] = +(values as any)[key]
+      if (!isNaN(+valuesWithNumbers[key])) valuesWithNumbers[key] = +valuesWithNumbers[key]
     }
 
     Fractal.setConfiguration(values)
@@ -103,6 +104,31 @@ const SideBar: React.FC = () => {
                   <FormHeader title='Configuration' />
                   <div className='settings'>
                     <FormSection title='Fractal settings'>
+                      <Field
+                        name='iterationsCount'
+                        validate={validateSize}
+                        label='Iteration count'
+                        defaultValue={Fractal.configuration.iterationsCount.toString()}
+                      >
+                        {({ fieldProps, error }) => (
+                          <>
+                            <TextField {...fieldProps} />
+                            {error && <ErrorMessage>{error}</ErrorMessage>}
+                          </>
+                        )}
+                      </Field>
+                      <Field<Value<CalculationProviderOption>>
+                        name='calculationProvider'
+                        label='Select calculation provider'
+                        defaultValue={Fractal.configuration.calculationProvider}
+                      >
+                        {({ fieldProps }) => (
+                          <Select<CalculationProviderOption>
+                            {...fieldProps}
+                            options={CalculationProviderOptions}
+                          />
+                        )}
+                      </Field>
                       <Field<Value<FractalOption>>
                         defaultValue={Fractal.configuration.fractal}
                         name='fractal'
@@ -113,7 +139,7 @@ const SideBar: React.FC = () => {
                         )}
                       </Field>
                       {getValues().fractal?.value === FractalType.Julia && (
-                        <HorizontalLayout gap='10px'>
+                        <HorizontalLayout className='cPart'>
                           <Field
                             validate={validatePoint}
                             name='cReal'
@@ -142,18 +168,6 @@ const SideBar: React.FC = () => {
                           </Field>
                         </HorizontalLayout>
                       )}
-                      <Field<Value<CalculationProviderOption>>
-                        name='calculationProvider'
-                        label='Select calculation provider'
-                        defaultValue={Fractal.configuration.calculationProvider}
-                      >
-                        {({ fieldProps }) => (
-                          <Select<CalculationProviderOption>
-                            {...fieldProps}
-                            options={CalculationProviderOptions}
-                          />
-                        )}
-                      </Field>
                     </FormSection>
                     <FormSection title='Image settings'>
                       <Field

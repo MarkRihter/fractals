@@ -22,6 +22,7 @@ pub fn render_fractal(
     c_real: f64,
     c_imaginary: f64,
     zoom: f64,
+    iterations_count: i32,
 ) {
     let mut payload = vec![0u8; mx * my * 4];
     let mut dispatched_progress: f64 = 0.0;
@@ -45,34 +46,33 @@ pub fn render_fractal(
 
             payload[canvasX * 4 + canvasY * mx * 4 + 3] = 255;
 
-            // TODO подумать, как избавиться от дупликации кода
-            if fractal == 0 {
-                let mut mandelbrot= Mandelbrot::new(Complex::new(
-                    x as f64 / divisor + x_center,
-                    y as f64 / divisor - y_center,
-                ));
+            let mut mandelbrot = Mandelbrot::new(Complex::new(
+                x as f64 / divisor + x_center,
+                y as f64 / divisor - y_center,
+            ));
+            let mut julia = Julia::new(
+                Complex::new(c_real, c_imaginary),
+                Complex::new(x as f64 / divisor + x_center, y as f64 / divisor - y_center),
+            );
 
-                for _ in 0..100 {
-                    if mandelbrot.next().unwrap_or(Complex::from(2.0)).norm() >= 2.0 {
-                        payload[canvasX * 4 + canvasY * mx * 4] = 255;
-                        payload[canvasX * 4 + canvasY * mx * 4 + 1] = 255;
-                        payload[canvasX * 4 + canvasY * mx * 4 + 2] = 255;
-                        break;
-                    }
-                }
-            } else {
-                let mut julia = Julia::new(
-                    Complex::new(c_real, c_imaginary),
-                    Complex::new(x as f64 / divisor + x_center, y as f64 / divisor - y_center),
-                );
+            for i in 0..iterations_count {
+                let z = match fractal {
+                    0 => mandelbrot.next().unwrap_or(Complex::from(2.0)).norm(),
+                    1 => julia.next().unwrap_or(Complex::from(2.0)).norm(),
+                    _ => 2.0,
+                };
 
-                for _ in 0..100 {
-                    if julia.next().unwrap_or(Complex::from(2.0)).norm() >= 2.0 {
-                        payload[canvasX * 4 + canvasY * mx * 4] = 255;
-                        payload[canvasX * 4 + canvasY * mx * 4 + 1] = 255;
-                        payload[canvasX * 4 + canvasY * mx * 4 + 2] = 255;
-                        break;
-                    }
+                if z >= 2.0 {
+                    let i_f64 = i as f64;
+
+                    payload[canvasX * 4 + canvasY * mx * 4] =
+                        ((0.016 * i_f64 + 2.0).sin() * 100.0 + 155.0) as u8;
+                    payload[canvasX * 4 + canvasY * mx * 4 + 1] =
+                        ((0.014 * i_f64 + 3.0).sin() * 100.0 + 155.0) as u8;
+                    payload[canvasX * 4 + canvasY * mx * 4 + 2] =
+                        ((0.05 * i_f64 + 4.0).sin() * 100.0 + 155.0) as u8;
+
+                    break;
                 }
             }
         }
