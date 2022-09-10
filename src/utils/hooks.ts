@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BehaviorSubject } from 'rxjs'
+import { getWindowSize } from './screenSizeUtils'
 
 type ScreenSize = {
   width: number
@@ -7,17 +8,11 @@ type ScreenSize = {
 }
 
 export function useScreenSize() {
-  const [screenSize, setScreenSize] = useState<ScreenSize>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  })
+  const [screenSize, setScreenSize] = useState<ScreenSize>(getWindowSize())
 
   useEffect(() => {
     const onResize = () => {
-      setScreenSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
+      setScreenSize(getWindowSize())
     }
 
     window.addEventListener('resize', onResize)

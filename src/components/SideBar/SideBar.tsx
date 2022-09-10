@@ -23,13 +23,12 @@ import {
   CalculationProviderOptions,
   Optional,
 } from 'interfaces'
-import { useObserver, useScreenSize } from 'utils'
+import { useObserver, getWindowSize } from 'utils'
 import { IConfigurationFields } from 'models'
 import breakpoints from 'styles/breakpoints.module.scss'
 import './styles.scss'
 
 const SideBar: React.FC = () => {
-  const screenSize = useScreenSize()
   const isDrawerOpened = useObserver(Drawer.isDrawerOpened)
   const img = useObserver(Fractal.img)
 
@@ -60,7 +59,7 @@ const SideBar: React.FC = () => {
     return undefined
   }
 
-  const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
+  const isScreenSmall = getWindowSize().width <= parseInt(breakpoints.smallScreen)
 
   return (
     <>

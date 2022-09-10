@@ -19,3 +19,10 @@ export function provideAvailableScreenSizeToCss() {
   onResize()
   window.addEventListener('resize', onResize)
 }
+
+export function getWindowSize() {
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }
+}

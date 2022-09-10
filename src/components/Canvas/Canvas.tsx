@@ -22,7 +22,7 @@ const Canvas: React.FC = () => {
         <CenterLayout className='emptyCaptionWrapper'>
           <EmptyState
             width={isScreenSmall ? 'narrow' : 'wide'}
-            header='No fractal had been rendered'
+            header='No fractal has been rendered'
             description='You can set up custom fractal configuration or render an image'
             primaryAction={
               <Button isDisabled={isCalculating} appearance='primary' onClick={Fractal.drawFractal}>
