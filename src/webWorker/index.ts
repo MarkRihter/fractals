@@ -4,25 +4,33 @@ import { WorkerPostMessage } from 'interfaces'
 import init, { render_fractal } from 'wasm/pkg'
 import valueGenerator from './generator'
 
-self.onmessage = (e: MessageEvent<WorkerPostMessage>) => {
+self.onmessage = async (e: MessageEvent<WorkerPostMessage>) => {
   if (e && e.data) {
-    const { xSize, ySize, fractal, xCenter, yCenter, cReal, cImaginary, zoom, iterationsCount } =
-      e.data
+    const {
+      xSize: x_size,
+      ySize: y_size,
+      fractal: fractal_type,
+      xCenter: x_center,
+      yCenter: y_center,
+      cReal: c_real,
+      cImaginary: c_imaginary,
+      zoom,
+      iterationsCount: iterations_count,
+    } = e.data
     switch (e.data.calculationProvider) {
       case CalculationProvider.Rust:
-        init().then(() =>
-          render_fractal(
-            xSize,
-            ySize,
-            fractal,
-            xCenter,
-            yCenter,
-            cReal,
-            cImaginary,
-            zoom,
-            iterationsCount
-          )
-        )
+        await init()
+        render_fractal({
+          x_size,
+          y_size,
+          fractal_type,
+          x_center,
+          y_center,
+          c_real,
+          c_imaginary,
+          zoom,
+          iterations_count,
+        })
         break
       case CalculationProvider.JS:
         renderFractal(e.data)
