@@ -1,24 +1,29 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import { Fractal, Drawer } from 'models'
 import EmptyState from '@atlaskit/empty-state'
 import Button from '@atlaskit/button'
 import ProgressBar from '@atlaskit/progress-bar'
 import { CenterLayout } from 'components'
-import { Fractal, Drawer } from 'models'
 import { useObserver, useScreenSize } from 'utils'
+import { useCanvasUpdate, useCanvasZoom } from './hooks'
 import breakpoints from 'styles/breakpoints.module.scss'
 import './styles.scss'
 
 const Canvas: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const screenSize = useScreenSize()
   const isCalculating = useObserver(Fractal.isCalculating)
-  const img = useObserver(Fractal.img)
+  const imgData = useObserver(Fractal.imgData)
   const progress = useObserver(Fractal.progress)
+
+  useCanvasUpdate(canvasRef)
+  useCanvasZoom(canvasRef, imgData)
 
   const isScreenSmall = screenSize.width <= parseInt(breakpoints.smallScreen)
 
   return (
     <div className='fractal'>
-      {!img && !isCalculating && (
+      {!imgData && !isCalculating && (
         <CenterLayout className='emptyCaptionWrapper'>
           <EmptyState
             width={isScreenSmall ? 'narrow' : 'wide'}
@@ -47,7 +52,7 @@ const Canvas: React.FC = () => {
           </CenterLayout>
         </div>
       )}
-      <img src={img} alt='fractal' className='img' />
+      <canvas ref={canvasRef} className='canvas' />
     </div>
   )
 }

@@ -30,7 +30,7 @@ import './styles.scss'
 
 const SideBar: React.FC = () => {
   const isDrawerOpened = useObserver(Drawer.isDrawerOpened)
-  const img = useObserver(Fractal.img)
+  const imgData = useObserver(Fractal.imgData)
 
   const onSubmit: OnSubmitHandler<IConfigurationFields> = values => {
     const valuesWithNumbers = values as any
@@ -72,7 +72,7 @@ const SideBar: React.FC = () => {
         >
           {!isScreenSmall && 'Configuration'}
         </Button>
-        {!!img && (
+        {!!imgData && (
           <>
             <Button
               className='drawerButton'
@@ -182,19 +182,19 @@ const SideBar: React.FC = () => {
                           </>
                         )}
                       </Field>
-                      <Field
-                        name='ySize'
-                        validate={validateSize}
-                        defaultValue={Fractal.configuration.ySize.toString()}
-                        label='Image height'
-                      >
-                        {({ fieldProps, error }) => (
-                          <>
-                            <TextField {...fieldProps} />
-                            {error && <ErrorMessage>{error}</ErrorMessage>}
-                          </>
-                        )}
-                      </Field>
+                      {/*<Field*/}
+                      {/*  name='ySize'*/}
+                      {/*  validate={validateSize}*/}
+                      {/*  defaultValue={Fractal.configuration.ySize.toString()}*/}
+                      {/*  label='Image height'*/}
+                      {/*>*/}
+                      {/*  {({ fieldProps, error }) => (*/}
+                      {/*    <>*/}
+                      {/*      <TextField {...fieldProps} />*/}
+                      {/*      {error && <ErrorMessage>{error}</ErrorMessage>}*/}
+                      {/*    </>*/}
+                      {/*  )}*/}
+                      {/*</Field>*/}
                       <Field
                         name='xCenter'
                         validate={validatePoint}

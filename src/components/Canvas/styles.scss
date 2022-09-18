@@ -5,14 +5,10 @@
   flex-direction: column;
   align-items: stretch;
 
-  .img {
+  .canvas {
     flex: 1;
-    object-fit: contain;
     overflow: hidden;
-
-    &.onFullscreen {
-      object-fit: cover;
-    }
+    cursor: crosshair;
   }
 
   .emptyCaptionWrapper {
