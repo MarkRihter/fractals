@@ -57,19 +57,30 @@ export function useCanvasZoom(
   canvasEl.onmouseup = ({ x: xUp }) => {
     if (!mouseDownPosition.current) return
 
-    const { xSize, zoom: currentZoom } = Fractal.configuration
+    const {
+      xSize,
+      zoom: currentZoom,
+      xCenter: currentXCenter,
+      yCenter: currentYCenter,
+    } = Fractal.configuration
     const { x: xDown, y: yDown } = mouseDownPosition.current
 
     const xCenterInWindowCoordinates = xDown + (xUp - xDown) / 2
 
     const yCenterInWindowCoordinates = yDown + (xUp - xDown) / Fractal.imageAspectRatio / 2
 
-    const xCenter = ((xCenterInWindowCoordinates - window.innerWidth / 2) / window.innerWidth) * 4
+    const xSpread = 4 / currentZoom
+    const ySpread = 4 / Fractal.imageAspectRatio / currentZoom
+
+    const xCenter =
+      ((xCenterInWindowCoordinates - window.innerWidth / 2) / window.innerWidth) * xSpread +
+      currentXCenter
     const yCenter =
-      (((window.innerHeight / 2 - yCenterInWindowCoordinates) / window.innerHeight) * 4) /
-      Fractal.imageAspectRatio
+      ((window.innerHeight / 2 - yCenterInWindowCoordinates) / window.innerHeight) * ySpread +
+      currentYCenter
 
     const zoom = (xSize / Math.abs(xUp - xDown)) * currentZoom
+
     Fractal.setConfiguration({ ...Fractal.configuration, zoom, xCenter, yCenter })
     Fractal.drawFractal()
 
