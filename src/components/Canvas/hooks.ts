@@ -28,6 +28,7 @@ export function useCanvasZoom(
   fractalImgData: ImageData | null
 ) {
   const mouseDownPosition = useRef<MousePosition | null>(null)
+  const mouseDownMs = useRef<number | null>(null)
 
   const canvasEl = canvasRef.current
   const ctx = canvasEl?.getContext('2d')
@@ -36,9 +37,12 @@ export function useCanvasZoom(
   ctx.strokeStyle = '#0065FF'
   ctx.fillStyle = '#0065FF1A'
 
-  canvasEl.onmousedown = ({ x, y }) => (mouseDownPosition.current = { x, y })
+  canvasEl.onpointerdown = ({ x, y }) => {
+    mouseDownMs.current = Date.now()
+    mouseDownPosition.current = { x, y }
+  }
 
-  canvasEl.onmousemove = ({ x: xMove }) => {
+  canvasEl.onpointermove = ({ x: xMove }) => {
     if (!mouseDownPosition.current || !ctx || !fractalImgData) return
     const { x: xDown, y: yDown } = mouseDownPosition.current
 
@@ -54,8 +58,13 @@ export function useCanvasZoom(
     })
   }
 
-  canvasEl.onmouseup = ({ x: xUp }) => {
+  canvasEl.onpointerup = ({ x: xUp }) => {
+    if (!mouseDownMs.current) return
     if (!mouseDownPosition.current) return
+    if (Date.now() - mouseDownMs.current < 200) {
+      mouseDownPosition.current = null
+      return
+    }
 
     const {
       xSize,
@@ -65,12 +74,15 @@ export function useCanvasZoom(
     } = Fractal.configuration
     const { x: xDown, y: yDown } = mouseDownPosition.current
 
+    const xAspectRatio = Fractal.imageAspectRatio > 1 ? 1 : Fractal.imageAspectRatio
+    const yAspectRatio = Fractal.imageAspectRatio > 1 ? Fractal.imageAspectRatio : 1
+
     const xCenterInWindowCoordinates = xDown + (xUp - xDown) / 2
 
     const yCenterInWindowCoordinates = yDown + (xUp - xDown) / Fractal.imageAspectRatio / 2
 
-    const xSpread = 4 / currentZoom
-    const ySpread = 4 / Fractal.imageAspectRatio / currentZoom
+    const xSpread = (4 * xAspectRatio) / currentZoom
+    const ySpread = 4 / yAspectRatio / currentZoom
 
     const xCenter =
       ((xCenterInWindowCoordinates - window.innerWidth / 2) / window.innerWidth) * xSpread +
