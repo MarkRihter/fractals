@@ -28,7 +28,6 @@ export function useCanvasZoom(
   fractalImgData: ImageData | null
 ) {
   const mouseDownPosition = useRef<MousePosition | null>(null)
-  const mouseDownMs = useRef<number | null>(null)
 
   const canvasEl = canvasRef.current
   const ctx = canvasEl?.getContext('2d')
@@ -38,7 +37,6 @@ export function useCanvasZoom(
   ctx.fillStyle = '#0065FF1A'
 
   canvasEl.onpointerdown = ({ x, y }) => {
-    mouseDownMs.current = Date.now()
     mouseDownPosition.current = { x, y }
   }
 
@@ -59,12 +57,7 @@ export function useCanvasZoom(
   }
 
   canvasEl.onpointerup = ({ x: xUp }) => {
-    if (!mouseDownMs.current) return
     if (!mouseDownPosition.current) return
-    if (Date.now() - mouseDownMs.current < 200) {
-      mouseDownPosition.current = null
-      return
-    }
 
     const {
       xSize,
